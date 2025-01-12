@@ -1,4 +1,4 @@
-package com.talles.GerenciadorComandas.model;
+package com.talles.GerenciadorComandas.enums;
 
 public enum Role {
     ADMINISTRACAO(1),FUNCIONARIO(2);

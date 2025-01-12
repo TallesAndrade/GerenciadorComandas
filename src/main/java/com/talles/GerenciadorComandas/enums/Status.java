@@ -1,4 +1,4 @@
-package com.talles.GerenciadorComandas.model;
+package com.talles.GerenciadorComandas.enums;
 
 public enum Status {
     ABERTA(0),FECHADA(1),CANCELAD(2);

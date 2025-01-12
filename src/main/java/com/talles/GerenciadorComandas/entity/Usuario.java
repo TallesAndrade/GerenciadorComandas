@@ -1,9 +1,7 @@
 package com.talles.GerenciadorComandas.entity;
 
-import com.talles.GerenciadorComandas.model.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.talles.GerenciadorComandas.enums.Role;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,11 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Usuario {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String email;
     private String usuarioLogin;
     private String senha;
+
+    @Enumerated(EnumType.ORDINAL)
     private Role role;
 
 
