@@ -28,5 +28,10 @@ public class ProdutoComanda {
     private BigDecimal valorUnitario;
     private BigDecimal valorTotal;
 
-
-}
+    @PostLoad
+    public void postLoad(){
+        if(produto != null){
+            this.valorUnitario = produto.getPreco();
+            this.valorTotal = valorUnitario.multiply(new BigDecimal(quantidade));
+        }
+    }   }
