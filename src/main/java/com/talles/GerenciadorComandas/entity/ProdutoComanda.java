@@ -17,10 +17,16 @@ public class ProdutoComanda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "comanda_id")
     private Comanda comanda;
 
+    @ManyToOne
+    @JoinColumn(name = "produto_id")
     private Produto produto;
     private int quantidade;
-    private BigDecimal valorUnitario = produto.getPreco();
-    private BigDecimal valorTotal = valorUnitario.multiply(new BigDecimal(quantidade));
+    private BigDecimal valorUnitario;
+    private BigDecimal valorTotal;
+
+
 }

@@ -1,6 +1,6 @@
 package com.talles.GerenciadorComandas.entity;
 
-import com.talles.GerenciadorComandas.model.Status;
+import com.talles.GerenciadorComandas.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,11 +23,14 @@ public class Comanda {
 
     private String nomeCliente;
 
-
+    @OneToMany(mappedBy = "comanda",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<ProdutoComanda> produtosComanda = new ArrayList<>();
 
+    @Column(precision = 10,scale = 2)
     private BigDecimal valorTotal;
     private LocalDateTime dataAbertura;
+
+    @Enumerated(EnumType.ORDINAL)
     private Status statusComanda;
 
 }
