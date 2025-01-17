@@ -1,7 +1,7 @@
 package com.talles.GerenciadorComandas.service;
 
-import com.talles.GerenciadorComandas.dtos.UsuarioDTO;
-import com.talles.GerenciadorComandas.dtos.UsuarioMapper;
+import com.talles.GerenciadorComandas.controller.dtos.UsuarioDTO;
+import com.talles.GerenciadorComandas.mapper.UsuarioMapper;
 import com.talles.GerenciadorComandas.entity.Usuario;
 import com.talles.GerenciadorComandas.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.talles.GerenciadorComandas.controller;
 
-import com.talles.GerenciadorComandas.dtos.UsuarioDTO;
+import com.talles.GerenciadorComandas.controller.dtos.UsuarioDTO;
 import com.talles.GerenciadorComandas.service.UsuarioService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
