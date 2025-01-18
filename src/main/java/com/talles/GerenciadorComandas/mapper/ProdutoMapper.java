@@ -2,7 +2,9 @@ package com.talles.GerenciadorComandas.mapper;
 
 import com.talles.GerenciadorComandas.controller.dtos.ProdutoDTO;
 import com.talles.GerenciadorComandas.entity.Produto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProdutoMapper {
     public Produto mapToEntity(ProdutoDTO produtoDTO) {
         Produto produto = new Produto();
