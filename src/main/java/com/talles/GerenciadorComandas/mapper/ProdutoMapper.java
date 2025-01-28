@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class ProdutoMapper {
     public Produto mapToEntity(ProdutoDTO produtoDTO) {
         Produto produto = new Produto();
+        produto.setId(produtoDTO.getId());
         produto.setNome(produtoDTO.getNome());
         produto.setPreco(produtoDTO.getPreco());
         produto.setCodigoDeBarras(produtoDTO.getCodigoDeBarras());
@@ -16,6 +17,7 @@ public class ProdutoMapper {
     }
     public ProdutoDTO mapToDTO(Produto produto){
         ProdutoDTO produtoDTO = new ProdutoDTO();
+        produtoDTO.setId(produto.getId());
         produtoDTO.setNome(produto.getNome());
         produtoDTO.setPreco(produto.getPreco());
         produtoDTO.setCodigoDeBarras(produto.getCodigoDeBarras());

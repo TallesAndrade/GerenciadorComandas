@@ -39,4 +39,9 @@ public class ProdutoController {
         produtoService.deletarProdutoById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<ProdutoDTO> atualizarProuto(@PathVariable Long id,@RequestBody ProdutoDTO produtoDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(produtoService.atualizarProduto(id,produtoDTO));
+    }
 }
