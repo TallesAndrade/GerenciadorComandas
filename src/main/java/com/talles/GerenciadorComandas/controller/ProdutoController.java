@@ -20,8 +20,7 @@ public class ProdutoController {
 
     @PostMapping("/criar")
     public ResponseEntity<ProdutoDTO> criarProduto(@RequestBody ProdutoDTO produtoDTO){
-        produtoService.cadastrarProduto(produtoDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(produtoDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoService.cadastrarProduto(produtoDTO));
     }
 
     @GetMapping("/listar")
