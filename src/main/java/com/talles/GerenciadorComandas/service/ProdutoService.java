@@ -4,7 +4,6 @@ import com.talles.GerenciadorComandas.controller.dtos.ProdutoDTO;
 import com.talles.GerenciadorComandas.entity.Produto;
 import com.talles.GerenciadorComandas.mapper.ProdutoMapper;
 import com.talles.GerenciadorComandas.repository.ProdutoRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,16 +13,20 @@ import java.util.Optional;
 public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final ProdutoMapper produtoMapper;
+    private final EstoqueService estoqueService;
 
-    public ProdutoService(ProdutoRepository produtoRepository, ProdutoMapper produtoMapper) {
+    public ProdutoService(ProdutoRepository produtoRepository, ProdutoMapper produtoMapper,EstoqueService estoqueService) {
         this.produtoRepository = produtoRepository;
         this.produtoMapper = produtoMapper;
+        this.estoqueService = estoqueService;
+
     }
 
 
     public ProdutoDTO cadastrarProduto(ProdutoDTO produtoDTO){
         Produto produto = produtoMapper.mapToEntity(produtoDTO);
         produtoRepository.save(produto);
+        estoqueService.criarEstoque(produto);
         return produtoMapper.mapToDTO(produto);
     }
 
