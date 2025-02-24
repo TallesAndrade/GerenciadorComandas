@@ -19,4 +19,9 @@ public class Estoque {
     @JoinColumn(name = "produto_id")
     private Produto produto;
     private int quantidade;
+
+    public Estoque(Produto produto) {
+        this.produto = produto;
+        this.quantidade = 0;
+    }
 }
