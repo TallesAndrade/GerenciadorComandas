@@ -24,8 +24,11 @@ public class ProdutoComanda {
     @ManyToOne
     @JoinColumn(name = "produto_id")
     private Produto produto;
+
     private int quantidade;
+
     private BigDecimal valorUnitario;
+
     private BigDecimal valorTotal;
 
     @PostLoad

@@ -23,10 +23,10 @@ public class Comanda {
 
     private String nomeCliente;
 
-    @OneToMany(mappedBy = "comanda",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "comanda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProdutoComanda> produtosComanda = new ArrayList<>();
 
-    @Column(precision = 10,scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal valorTotal;
     private LocalDateTime dataAbertura;
 
