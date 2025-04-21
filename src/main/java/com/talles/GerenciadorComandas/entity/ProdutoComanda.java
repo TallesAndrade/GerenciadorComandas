@@ -37,4 +37,14 @@ public class ProdutoComanda {
             this.valorUnitario = produto.getPreco();
             this.valorTotal = valorUnitario.multiply(new BigDecimal(quantidade));
         }
-    }   }
+    }
+
+    public ProdutoComanda(Comanda comanda,Produto produto, int quantidade) {
+        this.comanda = comanda;
+        this.produto = produto;
+        this.quantidade = quantidade;
+        this.valorUnitario = produto.getPreco();
+        this.valorTotal = produto.getPreco().multiply(new BigDecimal(quantidade));
+    }
+}
+
