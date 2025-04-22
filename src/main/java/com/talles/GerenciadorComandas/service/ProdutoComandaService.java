@@ -24,7 +24,6 @@ public class ProdutoComandaService {
             estoqueRepository.save(produtoEstoque);
             return produtoComandaRepository.save(new ProdutoComanda(comanda,produtoEstoque.getProduto(),quantidade));
         }
-        System.out.printf("aaaaaaa");
         return null;
     }
 }
