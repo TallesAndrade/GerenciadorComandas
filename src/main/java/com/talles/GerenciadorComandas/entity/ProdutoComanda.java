@@ -1,5 +1,6 @@
 package com.talles.GerenciadorComandas.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class ProdutoComanda {
 
     @ManyToOne
     @JoinColumn(name = "comanda_id")
+    @JsonIgnore
     private Comanda comanda;
 
     @ManyToOne
