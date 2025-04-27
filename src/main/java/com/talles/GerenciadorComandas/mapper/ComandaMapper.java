@@ -4,8 +4,6 @@ import com.talles.GerenciadorComandas.controller.dtos.ComandaDTO;
 import com.talles.GerenciadorComandas.entity.Comanda;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 
 @Component
 public class ComandaMapper {
@@ -17,6 +15,7 @@ public class ComandaMapper {
         comandaDTO.setProdutosComanda(comanda.getProdutosComanda());
         comandaDTO.setValorTotal(comanda.getValorTotal());
         comandaDTO.setDataAbertura(comanda.getDataAbertura());
+        comandaDTO.setDataFechamento(comanda.getDataFechamento());
         comandaDTO.setStatusComanda(comanda.getStatusComanda());
         return comandaDTO;
     }
@@ -28,6 +27,7 @@ public class ComandaMapper {
         comanda.setProdutosComanda(comandaDTO.getProdutosComanda());
         comanda.setValorTotal(comandaDTO.getValorTotal());
         comanda.setDataAbertura(comandaDTO.getDataAbertura());
+        comanda.setDataFechamento(comandaDTO.getDataFechamento());
         comanda.setStatusComanda(comandaDTO.getStatusComanda());
         return comanda;
     }

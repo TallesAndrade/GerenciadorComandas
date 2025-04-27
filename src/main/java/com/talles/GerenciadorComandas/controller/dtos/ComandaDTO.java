@@ -16,14 +16,10 @@ import java.util.List;
 
 public class ComandaDTO {
     private Long id;
-
     private String nomeCliente;
-
     private List<ProdutoComanda> produtosComanda = new ArrayList<>();
-
     private BigDecimal valorTotal;
-
     private LocalDateTime dataAbertura;
-
+    private LocalDateTime dataFechamento;
     private Status statusComanda;
 }

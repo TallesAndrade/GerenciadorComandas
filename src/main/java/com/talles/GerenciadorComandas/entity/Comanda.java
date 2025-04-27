@@ -29,6 +29,7 @@ public class Comanda {
     @Column(precision = 10, scale = 2)
     private BigDecimal valorTotal;
     private LocalDateTime dataAbertura;
+    private LocalDateTime dataFechamento;
 
     @Enumerated(EnumType.ORDINAL)
     private Status statusComanda;
