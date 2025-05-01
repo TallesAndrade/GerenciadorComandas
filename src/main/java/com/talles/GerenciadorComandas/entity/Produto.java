@@ -1,5 +1,6 @@
 package com.talles.GerenciadorComandas.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,7 @@ public class Produto {
     private String codigoDeBarras;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<ProdutoComanda> produtoComandas = new ArrayList<>();
 
 
