@@ -7,11 +7,13 @@ import com.talles.GerenciadorComandas.entity.ProdutoComanda;
 import com.talles.GerenciadorComandas.enums.Status;
 import com.talles.GerenciadorComandas.mapper.ComandaMapper;
 import com.talles.GerenciadorComandas.repository.ComandaRepository;
+import com.talles.GerenciadorComandas.repository.ProdutoComandaRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,12 +22,14 @@ public class ComandaService {
     private final ComandaRepository comandaRepository;
     private final ComandaMapper comandaMapper;
     private final ProdutoComandaService produtoComandaService;
+    private final ProdutoComandaRepository produtoComandaRepository;
 
 
-    public ComandaService(ComandaRepository comandaRepository, ComandaMapper comandaMapper, ProdutoComandaService produtoComandaService) {
+    public ComandaService(ComandaRepository comandaRepository, ComandaMapper comandaMapper, ProdutoComandaService produtoComandaService, ProdutoComandaRepository produtoComandaRepository) {
         this.comandaRepository = comandaRepository;
         this.comandaMapper = comandaMapper;
         this.produtoComandaService = produtoComandaService;
+        this.produtoComandaRepository = produtoComandaRepository;
     }
 
     public ComandaDTO criarComanda(ComandaDTO comandaDTO){
@@ -77,7 +81,6 @@ public class ComandaService {
         for (ProdutoComanda produtoComanda : produtosComanda){
             if (Objects.equals(produtoComanda.getProduto().getId(), itemComanda.getIdProduto())){
                 ajustarQuantidade(produtoComanda,itemComanda.getQuantidade());
-
             }
         }
         comanda.setProdutosComanda(produtosComanda);
@@ -95,20 +98,32 @@ public class ComandaService {
         }
     }
 
-    public void removerProduto(ItemComandaDTO itemComanda){
-        Comanda comanda = comandaRepository.findById(itemComanda.getIdComanda()).orElseThrow();
+    public void removerProduto(Long idComanda,Long idProduto, int quantidade){
+        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
         List<ProdutoComanda> produtosComanda = comanda.getProdutosComanda();
-        for (ProdutoComanda produtoComanda : produtosComanda){
-            if (Objects.equals(produtoComanda.getProduto().getId(), itemComanda.getIdProduto())){
-                produtoComandaService.devolverProdutoEstoque(produtoComanda, itemComanda.getQuantidade());
-                produtosComanda.remove(produtoComanda);
+        Iterator<ProdutoComanda> iterator = produtosComanda.iterator();
+        while (iterator.hasNext()){
+            ProdutoComanda produtoComanda = iterator.next();
+            if (Objects.equals(produtoComanda.getProduto().getId(), idProduto)){
+                produtoComandaService.devolverProdutoEstoque(produtoComanda, quantidade);
+                iterator.remove();
+                produtoComandaRepository.delete(produtoComanda);
+
             }
         }
         comanda.setProdutosComanda(produtosComanda);
         comandaRepository.save(comanda);
     }
 
-    public List<Comanda> listarComandas(){
-        return comandaRepository.findByStatusComanda(Status.ABERTA);
+    public List<ComandaDTO> listarComandas(){
+        List<Comanda> comandas = comandaRepository.findByStatusComanda(Status.ABERTA);
+        List<ComandaDTO> comandasDTOS = comandas.stream()
+                .map(comandaMapper::mapToDto).toList();
+        return comandasDTOS;
+    }
+
+    public ComandaDTO comandaPorID(Long idComanda){
+        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
+        return comandaMapper.mapToDto(comanda);
     }
 }
