@@ -1,7 +1,9 @@
 package com.talles.GerenciadorComandas.controller;
 
-import com.talles.GerenciadorComandas.controller.dtos.ProdutoDTO;
+import com.talles.GerenciadorComandas.controller.dtos.ProdutoRequestDTO;
+import com.talles.GerenciadorComandas.controller.dtos.ProdutoResponseDTO;
 import com.talles.GerenciadorComandas.service.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +21,17 @@ public class ProdutoController {
     }
 
     @PostMapping("/criar")
-    public ResponseEntity<ProdutoDTO> criarProduto(@RequestBody ProdutoDTO produtoDTO){
+    public ResponseEntity<ProdutoResponseDTO> criarProduto(@Valid @RequestBody ProdutoRequestDTO produtoDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoService.cadastrarProduto(produtoDTO));
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<List<ProdutoDTO>> listarProdutos(){
+    public ResponseEntity<List<ProdutoResponseDTO>> listarProdutos(){
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.listarProdutos());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ProdutoDTO> procurarPorId(@PathVariable Long id){
+    public ResponseEntity<ProdutoResponseDTO> procurarPorId(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.produtoById(id));
     }
 
@@ -40,7 +42,7 @@ public class ProdutoController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<ProdutoDTO> atualizarProuto(@PathVariable Long id,@RequestBody ProdutoDTO produtoDTO){
+    public ResponseEntity<ProdutoResponseDTO> atualizarProduto(@PathVariable Long id,@RequestBody ProdutoRequestDTO produtoDTO){
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.atualizarProduto(id,produtoDTO));
     }
 }
