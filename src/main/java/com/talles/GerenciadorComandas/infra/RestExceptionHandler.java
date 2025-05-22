@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ProdutoNotFoundException.class)
-    private ResponseEntity<String> produtoNotFoundHandler(ProdutoNotFoundException ex){
+    public ResponseEntity<String> produtoNotFoundHandler(ProdutoNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-
     }
+
+
 }
