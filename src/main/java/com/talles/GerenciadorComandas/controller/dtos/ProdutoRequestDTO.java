@@ -13,9 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProdutoDTO {
-
-    private Long id;
+public class ProdutoRequestDTO {
 
 
     private String nome;
