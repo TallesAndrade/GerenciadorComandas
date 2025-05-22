@@ -1,13 +1,14 @@
 package com.talles.GerenciadorComandas.service;
 
-import com.talles.GerenciadorComandas.controller.dtos.ProdutoDTO;
+import com.talles.GerenciadorComandas.controller.dtos.ProdutoRequestDTO;
+import com.talles.GerenciadorComandas.controller.dtos.ProdutoResponseDTO;
 import com.talles.GerenciadorComandas.entity.Produto;
+import com.talles.GerenciadorComandas.exceptions.ProdutoNotFoundException;
 import com.talles.GerenciadorComandas.mapper.ProdutoMapper;
 import com.talles.GerenciadorComandas.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProdutoService {
@@ -23,33 +24,37 @@ public class ProdutoService {
     }
 
 
-    public ProdutoDTO cadastrarProduto(ProdutoDTO produtoDTO){
-        Produto produto = produtoMapper.mapToEntity(produtoDTO);
+    public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoDTO){
+        Produto produto = produtoMapper.toEntity(produtoDTO);
         produtoRepository.save(produto);
         estoqueService.criarEstoque(produto);
-        return produtoMapper.mapToDTO(produto);
+        return produtoMapper.toDTO(produto);
     }
 
-    public List<ProdutoDTO> listarProdutos() {
+    public List<ProdutoResponseDTO> listarProdutos() {
         List<Produto> produtosList = produtoRepository.findAll();
-        List<ProdutoDTO> produtos = produtosList.stream()
-                .map(produtoMapper::mapToDTO).toList();
 
-        return produtos;
+        return produtosList.stream()
+                .map(produtoMapper::toDTO).toList();
 
     }
-    public ProdutoDTO produtoById(Long id){
-        Produto produto = produtoRepository.findById(id).orElseThrow();
-        return produtoMapper.mapToDTO(produto);
+    public ProdutoResponseDTO produtoById(Long id){
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(ProdutoNotFoundException::new);
+        return produtoMapper.toDTO(produto);
     }
     public void deletarProdutoById(Long id){
+        if (!produtoRepository.existsById(id)) {
+            throw new ProdutoNotFoundException();
+        }
         produtoRepository.deleteById(id);
 
     }
 
-    public ProdutoDTO atualizarProduto(Long id,ProdutoDTO produtoAtualizado){
-       Optional <Produto> produtoOptional = produtoRepository.findById(id);
-       Produto produto = produtoOptional.get();
+    public ProdutoResponseDTO atualizarProduto(Long id, ProdutoRequestDTO produtoAtualizado){
+       Produto produto = produtoRepository.findById(id)
+               .orElseThrow(ProdutoNotFoundException::new);
+
 
         if (produtoAtualizado.getNome() != null) {
             produto.setNome(produtoAtualizado.getNome());
@@ -62,7 +67,7 @@ public class ProdutoService {
         }
             produtoRepository.save(produto);
 
-            return  produtoMapper.mapToDTO(produto);
+            return  produtoMapper.toDTO(produto);
     }
 
 
