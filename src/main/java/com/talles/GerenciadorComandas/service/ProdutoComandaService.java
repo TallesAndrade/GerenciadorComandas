@@ -1,49 +1,49 @@
 package com.talles.GerenciadorComandas.service;
 
 import com.talles.GerenciadorComandas.entity.Comanda;
-import com.talles.GerenciadorComandas.entity.Estoque;
 import com.talles.GerenciadorComandas.entity.Produto;
 import com.talles.GerenciadorComandas.entity.ProdutoComanda;
-import com.talles.GerenciadorComandas.repository.EstoqueRepository;
+import com.talles.GerenciadorComandas.exceptions.ProdutoNotFoundException;
 import com.talles.GerenciadorComandas.repository.ProdutoComandaRepository;
+import com.talles.GerenciadorComandas.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
 public class ProdutoComandaService {
     private final ProdutoComandaRepository produtoComandaRepository;
-    private final EstoqueRepository estoqueRepository;
+    private final ProdutoRepository produtoRepository;
+    private final EstoqueService estoqueService;
 
-    public ProdutoComandaService(ProdutoComandaRepository produtoComandaRepository, EstoqueRepository estoqueRepository) {
+
+    public ProdutoComandaService(ProdutoComandaRepository produtoComandaRepository,ProdutoRepository produtoRepository, EstoqueService estoqueService) {
         this.produtoComandaRepository = produtoComandaRepository;
-        this.estoqueRepository = estoqueRepository;
+        this.produtoRepository = produtoRepository;
+        this.estoqueService = estoqueService;
     }
 
+    @Transactional
     public ProdutoComanda adicionarProdutoComanda(Comanda comanda,Long idProduto, int quantidade){
-        Estoque produtoEstoque =estoqueRepository.findById(idProduto).orElseThrow();
-        if (produtoEstoque.getQuantidade() >= quantidade){
-            produtoEstoque.setQuantidade(produtoEstoque.getQuantidade() - quantidade);
-            estoqueRepository.save(produtoEstoque);
-            return produtoComandaRepository.save(new ProdutoComanda(comanda,produtoEstoque.getProduto(),quantidade));
-        }
-        return null;
+        Produto produto = produtoRepository.findById(idProduto)
+                .orElseThrow(ProdutoNotFoundException::new);
+        estoqueService.subtrairSaldo(idProduto, quantidade);
+        return produtoComandaRepository.save(new ProdutoComanda(comanda,produto,quantidade));
+
     }
 
     public void voltarEstoque(Comanda comanda) {
         List<ProdutoComanda> produtos = comanda.getProdutosComanda();
         for(ProdutoComanda produtoComanda : produtos) {
             Produto produto = produtoComanda.getProduto();
-            Estoque estoque = estoqueRepository.findById(produto.getId()).orElseThrow();
-            estoque.setQuantidade(estoque.getQuantidade() + produtoComanda.getQuantidade());
-            estoqueRepository.save(estoque);
+            estoqueService.adicionarSaldo(produto.getId(), produtoComanda.getQuantidade());
         }
 
     }
 
     public void devolverProdutoEstoque(ProdutoComanda produtoComanda,int quantidade) {
         Produto produto = produtoComanda.getProduto();
-        Estoque estoque = estoqueRepository.findById(produto.getId()).orElseThrow();
-        estoque.setQuantidade(estoque.getQuantidade() + quantidade);
-        estoqueRepository.save(estoque);
+        estoqueService.adicionarSaldo(produto.getId() , quantidade);
     }
 }
