@@ -14,14 +14,14 @@ public class Estoque {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nomeProduto;
+    private Long idProduto;
 
-    @ManyToOne
-    @JoinColumn(name = "produto_id")
-    private Produto produto;
     private int quantidade;
 
     public Estoque(Produto produto) {
-        this.produto = produto;
+        this.nomeProduto = produto.getNome();
+        this.idProduto = produto.getId();
         this.quantidade = 0;
     }
 }
