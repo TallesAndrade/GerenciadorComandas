@@ -33,13 +33,7 @@ public class ProdutoComanda {
 
     private BigDecimal valorTotal;
 
-    @PostLoad
-    public void postLoad(){
-        if(produto != null){
-            this.valorUnitario = produto.getPreco();
-            this.valorTotal = valorUnitario.multiply(new BigDecimal(quantidade));
-        }
-    }
+
 
     public ProdutoComanda(Comanda comanda,Produto produto, int quantidade) {
         this.comanda = comanda;
