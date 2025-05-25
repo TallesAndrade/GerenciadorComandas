@@ -58,6 +58,7 @@ public class ProdutoService {
 
         if (produtoAtualizado.getNome() != null) {
             produto.setNome(produtoAtualizado.getNome());
+            estoqueService.atualizarNomeEstoque(id,produtoAtualizado.getNome());
         }
         if (produtoAtualizado.getPreco() != null) {
             produto.setPreco(produtoAtualizado.getPreco());
