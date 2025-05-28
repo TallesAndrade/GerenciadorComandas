@@ -1,9 +1,6 @@
 package com.talles.GerenciadorComandas.infra;
 
-import com.talles.GerenciadorComandas.exceptions.EstoqueAindaDisponivelException;
-import com.talles.GerenciadorComandas.exceptions.EstoqueProdutoNotFoundException;
-import com.talles.GerenciadorComandas.exceptions.ProdutoNotFoundException;
-import com.talles.GerenciadorComandas.exceptions.QuantidadeInsuficienteException;
+import com.talles.GerenciadorComandas.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -32,5 +29,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EstoqueAindaDisponivelException.class)
     public ResponseEntity<String> estoqueAIndaDisponivelHandler(EstoqueAindaDisponivelException ex) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ComandaNotFoundException.class)
+    public ResponseEntity<String> comandaNotFoundHandler(ComandaNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(StatusComandaInvalidoException.class)
+    public ResponseEntity<String> statusComandaInvalidoHandler(StatusComandaInvalidoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }
