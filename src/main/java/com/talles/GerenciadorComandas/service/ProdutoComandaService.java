@@ -46,4 +46,8 @@ public class ProdutoComandaService {
         Produto produto = produtoComanda.getProduto();
         estoqueService.adicionarSaldo(produto.getId() , quantidade);
     }
+
+    public void subtrairSaldo(ProdutoComanda produtoComanda, int quantidade) {
+        estoqueService.subtrairSaldo(produtoComanda.getProduto().getId(), quantidade);
+    }
 }
