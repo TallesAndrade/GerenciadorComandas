@@ -1,7 +1,6 @@
 package com.talles.GerenciadorComandas.controller;
 
-import com.talles.GerenciadorComandas.controller.dtos.ComandaDTO;
-import com.talles.GerenciadorComandas.controller.dtos.ItemComandaDTO;
+import com.talles.GerenciadorComandas.controller.dtos.*;
 import com.talles.GerenciadorComandas.service.ComandaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,47 +16,47 @@ public class ComandaController {
         this.comandaService = comandaService;
     }
 
-    @PostMapping("/criar")
-    public ResponseEntity<ComandaDTO> criarComanda(@RequestBody ComandaDTO comandaDTO){
+    @PostMapping()
+    public ResponseEntity<ComandaResponseDTO> criarComanda(@RequestBody ComandaRequestDTO comandaDTO){
         return ResponseEntity.ok(comandaService.criarComanda(comandaDTO));
 
     }
 
-    @PostMapping("/{id}/adicionar")
-    public ResponseEntity<ComandaDTO> adicionarProduto(@RequestBody ItemComandaDTO dto,@PathVariable Long id){
-        return ResponseEntity.ok(comandaService.adicionarProduto(id, dto.getIdProduto(), dto.getQuantidade()));
+    @PostMapping("/{id}/produtos")
+    public ResponseEntity<ComandaResponseDTO> adicionarProduto(@RequestBody ItemComandaDTO dto,@PathVariable Long idComanda){
+        return ResponseEntity.ok(comandaService.adicionarProduto(idComanda, dto.getIdProduto(), dto.getQuantidade()));
     }
 
-    @PatchMapping("/{id}/fechar")
-    public ResponseEntity<ComandaDTO> fecharComanda(@PathVariable Long id){
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ComandaFechadaResponseDTO> fecharComanda(@PathVariable Long id,@RequestBody StatusComandaRequestDTO dto){
         return ResponseEntity.ok(comandaService.fecharComanda(id));
     }
 
-    @PatchMapping("/{id}/cancelar")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<Void> cancelarComanda(@PathVariable Long id){
         comandaService.cancelarComanda(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/editar")
-    public ResponseEntity<ComandaDTO> editarProduto(@RequestBody ItemComandaDTO dto){
-        return ResponseEntity.ok(comandaService.editarComanda(dto));
+    @PatchMapping("/{id}/itens")
+    public ResponseEntity<ComandaResponseDTO> editarProduto(@PathVariable Long idComanda,@RequestBody ItemComandaDTO dto){
+        return ResponseEntity.ok(comandaService.editarComanda(idComanda,dto));
     }
 
-    @DeleteMapping("/{idComanda}/deletarProduto/{idProduto}?quantidade=x")
-    public ResponseEntity<Void> deletarProduto(@PathVariable Long idComanda,@PathVariable Long idProduto,@RequestParam int quantidade){
-        comandaService.removerProduto(idComanda, idProduto, quantidade);
+    @DeleteMapping("/{idComanda}/itens/{idProduto}")
+    public ResponseEntity<Void> deletarProduto(@PathVariable Long idComanda,@PathVariable Long idProduto,@RequestBody EditarComandaRequestDTO dto){
+        comandaService.removerProduto(idComanda, idProduto, dto.quantidade());
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/comandaPorId")
-    public ResponseEntity<ComandaDTO> buscarComandaPorId(@PathVariable Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<ComandaResponseDTO> buscarComandaPorId(@PathVariable Long id){
         return ResponseEntity.ok(comandaService.comandaPorID(id));
 
     }
 
-    @GetMapping("/comandas")
-    public ResponseEntity<List<ComandaDTO>> listarComandas(){
+    @GetMapping()
+    public ResponseEntity<List<ComandaResponseDTO>> listarComandas(){
         return ResponseEntity.ok(comandaService.listarComandas());
     }
 }
