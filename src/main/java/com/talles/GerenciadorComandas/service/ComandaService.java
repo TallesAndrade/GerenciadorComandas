@@ -77,8 +77,8 @@ public class ComandaService {
         comandaRepository.save(comanda);
     }
 
-    public ComandaResponseDTO editarComanda(ItemComandaDTO itemComanda){
-        Comanda comanda = comandaRepository.findById(itemComanda.getIdComanda())
+    public ComandaResponseDTO editarComanda(Long idComanda,ItemComandaDTO itemComanda){
+        Comanda comanda = comandaRepository.findById(idComanda)
                 .orElseThrow(ComandaNotFoundException::new);
         List<ProdutoComanda> produtosComanda = comanda.getProdutosComanda();
         for (ProdutoComanda produtoComanda : produtosComanda){
