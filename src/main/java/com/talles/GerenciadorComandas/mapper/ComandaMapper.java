@@ -1,34 +1,18 @@
 package com.talles.GerenciadorComandas.mapper;
 
-import com.talles.GerenciadorComandas.controller.dtos.ComandaDTO;
+import com.talles.GerenciadorComandas.controller.dtos.ComandaFechadaResponseDTO;
+import com.talles.GerenciadorComandas.controller.dtos.ComandaRequestDTO;
+import com.talles.GerenciadorComandas.controller.dtos.ComandaResponseDTO;
 import com.talles.GerenciadorComandas.entity.Comanda;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
 
-@Component
-public class ComandaMapper {
 
-    public ComandaDTO mapToDto(Comanda comanda){
-        ComandaDTO comandaDTO = new ComandaDTO();
-        comandaDTO.setId(comanda.getId());
-        comandaDTO.setNomeCliente(comanda.getNomeCliente());
-        comandaDTO.setProdutosComanda(comanda.getProdutosComanda());
-        comandaDTO.setValorTotal(comanda.getValorTotal());
-        comandaDTO.setDataAbertura(comanda.getDataAbertura());
-        comandaDTO.setDataFechamento(comanda.getDataFechamento());
-        comandaDTO.setStatusComanda(comanda.getStatusComanda());
-        return comandaDTO;
-    }
+@Mapper(componentModel = "spring" , uses = ProdutoComandaMapper.class)
+public interface ComandaMapper {
+    ComandaResponseDTO ToDto(Comanda comanda);
 
-    public Comanda mapToEntity(ComandaDTO comandaDTO){
-        Comanda comanda = new Comanda();
-        comanda.setId(comandaDTO.getId());
-        comanda.setNomeCliente(comandaDTO.getNomeCliente());
-        comanda.setProdutosComanda(comandaDTO.getProdutosComanda());
-        comanda.setValorTotal(comandaDTO.getValorTotal());
-        comanda.setDataAbertura(comandaDTO.getDataAbertura());
-        comanda.setDataFechamento(comandaDTO.getDataFechamento());
-        comanda.setStatusComanda(comandaDTO.getStatusComanda());
-        return comanda;
-    }
+    Comanda ToEntity(ComandaRequestDTO comandaDTO);
+
+    ComandaFechadaResponseDTO toFechadaDTO(Comanda comanda);
 }
