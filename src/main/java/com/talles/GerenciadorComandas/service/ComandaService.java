@@ -1,10 +1,10 @@
 package com.talles.GerenciadorComandas.service;
 
-import com.talles.GerenciadorComandas.controller.dtos.ComandaDTO;
-import com.talles.GerenciadorComandas.controller.dtos.ItemComandaDTO;
+import com.talles.GerenciadorComandas.controller.dtos.*;
 import com.talles.GerenciadorComandas.entity.Comanda;
 import com.talles.GerenciadorComandas.entity.ProdutoComanda;
 import com.talles.GerenciadorComandas.enums.Status;
+import com.talles.GerenciadorComandas.exceptions.ComandaNotFoundException;
 import com.talles.GerenciadorComandas.mapper.ComandaMapper;
 import com.talles.GerenciadorComandas.repository.ComandaRepository;
 import com.talles.GerenciadorComandas.repository.ProdutoComandaRepository;
@@ -32,15 +32,15 @@ public class ComandaService {
         this.produtoComandaRepository = produtoComandaRepository;
     }
 
-    public ComandaDTO criarComanda(ComandaDTO comandaDTO){
-        Comanda comanda = comandaMapper.mapToEntity(comandaDTO);
+    public ComandaResponseDTO criarComanda(ComandaRequestDTO comandaDTO){
+        Comanda comanda = comandaMapper.ToEntity(comandaDTO);
         comanda.setDataAbertura(LocalDateTime.now());
         comanda.setStatusComanda(Status.ABERTA);
         comandaRepository.save(comanda);
-        return comandaMapper.mapToDto(comanda);
+        return comandaMapper.ToDto(comanda);
     }
-    public ComandaDTO adicionarProduto(Long idComanda, Long idProduto, int quantidade){
-        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
+    public ComandaResponseDTO adicionarProduto(Long idComanda, Long idProduto, int quantidade){
+        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         List<ProdutoComanda> produtosComanda = comanda.getProdutosComanda();
         if (produtosComanda == null){
             produtosComanda = new ArrayList<>();
@@ -50,7 +50,7 @@ public class ComandaService {
         comanda.setProdutosComanda(produtosComanda);
         atualizarValorComanda(comanda);
         comandaRepository.save(comanda);
-        return comandaMapper.mapToDto(comanda);
+        return comandaMapper.ToDto(comanda);
     }
 
     private void atualizarValorComanda(Comanda comanda){
@@ -61,22 +61,25 @@ public class ComandaService {
         comanda.setValorTotal(valorTotal);
     }
 
-    public ComandaDTO fecharComanda(Long idComanda){
-        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
+    public ComandaFechadaResponseDTO fecharComanda(Long idComanda){
+        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         comanda.setStatusComanda(Status.FECHADA);
+        comanda.setDataFechamento(LocalDateTime.now());
         comandaRepository.save(comanda);
-        return comandaMapper.mapToDto(comanda);
+        return comandaMapper.toFechadaDTO(comanda);
     }
 
     public void cancelarComanda(Long idComanda){
-        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
+        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         comanda.setStatusComanda(Status.CANCELADA);
+        comanda.setDataFechamento(LocalDateTime.now());
         produtoComandaService.voltarEstoque(comanda);
         comandaRepository.save(comanda);
     }
 
-    public ComandaDTO editarComanda(ItemComandaDTO itemComanda){
-        Comanda comanda = comandaRepository.findById(itemComanda.getIdComanda()).orElseThrow();
+    public ComandaResponseDTO editarComanda(ItemComandaDTO itemComanda){
+        Comanda comanda = comandaRepository.findById(itemComanda.getIdComanda())
+                .orElseThrow(ComandaNotFoundException::new);
         List<ProdutoComanda> produtosComanda = comanda.getProdutosComanda();
         for (ProdutoComanda produtoComanda : produtosComanda){
             if (Objects.equals(produtoComanda.getProduto().getId(), itemComanda.getIdProduto())){
@@ -86,7 +89,7 @@ public class ComandaService {
         comanda.setProdutosComanda(produtosComanda);
         atualizarValorComanda(comanda);
         comandaRepository.save(comanda);
-        return comandaMapper.mapToDto(comanda);
+        return comandaMapper.ToDto(comanda);
     }
 
     private void ajustarQuantidade(ProdutoComanda produtoComanda, int quantidade) {
@@ -94,12 +97,13 @@ public class ComandaService {
         if (produtoComanda.getQuantidade() > quantidade){
             produtoComandaService.devolverProdutoEstoque(produtoComanda,diferenca);
         }else {
+            produtoComandaService.subtrairSaldo(produtoComanda,diferenca);
             produtoComanda.setQuantidade(quantidade);
         }
     }
 
     public void removerProduto(Long idComanda,Long idProduto, int quantidade){
-        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
+        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         List<ProdutoComanda> produtosComanda = comanda.getProdutosComanda();
         Iterator<ProdutoComanda> iterator = produtosComanda.iterator();
         while (iterator.hasNext()){
@@ -115,15 +119,14 @@ public class ComandaService {
         comandaRepository.save(comanda);
     }
 
-    public List<ComandaDTO> listarComandas(){
+    public List<ComandaResponseDTO> listarComandas(){
         List<Comanda> comandas = comandaRepository.findByStatusComanda(Status.ABERTA);
-        List<ComandaDTO> comandasDTOS = comandas.stream()
-                .map(comandaMapper::mapToDto).toList();
-        return comandasDTOS;
+        return comandas.stream()
+                .map(comandaMapper::ToDto).toList();
     }
 
-    public ComandaDTO comandaPorID(Long idComanda){
+    public ComandaResponseDTO comandaPorID(Long idComanda){
         Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
-        return comandaMapper.mapToDto(comanda);
+        return comandaMapper.ToDto(comanda);
     }
 }
