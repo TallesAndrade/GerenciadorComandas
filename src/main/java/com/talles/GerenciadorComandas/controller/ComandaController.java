@@ -23,29 +23,25 @@ public class ComandaController {
     }
 
     @PostMapping("/{id}/produtos")
-    public ResponseEntity<ComandaResponseDTO> adicionarProduto(@RequestBody ItemComandaDTO dto,@PathVariable Long idComanda){
-        return ResponseEntity.ok(comandaService.adicionarProduto(idComanda, dto.getIdProduto(), dto.getQuantidade()));
+    public ResponseEntity<ComandaResponseDTO> adicionarProduto(@PathVariable Long id,@RequestBody ItemComandaDTO dto){
+        return ResponseEntity.ok(comandaService.adicionarProduto(id , dto.getIdProduto(), dto.getQuantidade()));
     }
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<ComandaFechadaResponseDTO> fecharComanda(@PathVariable Long id,@RequestBody StatusComandaRequestDTO dto){
-        return ResponseEntity.ok(comandaService.fecharComanda(id));
+        return ResponseEntity.ok(comandaService.ajustarStatusComanda(id,dto.status()));
     }
 
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<Void> cancelarComanda(@PathVariable Long id){
-        comandaService.cancelarComanda(id);
-        return ResponseEntity.noContent().build();
-    }
+
 
     @PatchMapping("/{id}/itens")
-    public ResponseEntity<ComandaResponseDTO> editarProduto(@PathVariable Long idComanda,@RequestBody ItemComandaDTO dto){
-        return ResponseEntity.ok(comandaService.editarComanda(idComanda,dto));
+    public ResponseEntity<ComandaResponseDTO> editarProduto(@PathVariable Long id , @RequestBody ItemComandaDTO dto){
+        return ResponseEntity.ok(comandaService.editarComanda(id,dto));
     }
 
     @DeleteMapping("/{idComanda}/itens/{idProduto}")
-    public ResponseEntity<Void> deletarProduto(@PathVariable Long idComanda,@PathVariable Long idProduto,@RequestBody EditarComandaRequestDTO dto){
-        comandaService.removerProduto(idComanda, idProduto, dto.quantidade());
+    public ResponseEntity<Void> deletarProduto(@PathVariable Long idComanda,@PathVariable Long idProduto){
+        comandaService.removerProduto(idComanda, idProduto);
         return ResponseEntity.noContent().build();
     }
 
