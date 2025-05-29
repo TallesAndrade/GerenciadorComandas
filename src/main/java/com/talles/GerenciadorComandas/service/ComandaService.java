@@ -104,20 +104,21 @@ public class ComandaService {
         }
     }
 
-    public void removerProduto(Long idComanda,Long idProduto, int quantidade){
+    public void removerProduto(Long idComanda,Long idProduto){
         Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         List<ProdutoComanda> produtosComanda = comanda.getProdutosComanda();
         Iterator<ProdutoComanda> iterator = produtosComanda.iterator();
         while (iterator.hasNext()){
             ProdutoComanda produtoComanda = iterator.next();
             if (Objects.equals(produtoComanda.getProduto().getId(), idProduto)){
-                produtoComandaService.devolverProdutoEstoque(produtoComanda, quantidade);
+                produtoComandaService.devolverProdutoEstoque(produtoComanda, produtoComanda.getQuantidade());
                 iterator.remove();
                 produtoComandaRepository.delete(produtoComanda);
-
+                break;
             }
         }
         comanda.setProdutosComanda(produtosComanda);
+        atualizarValorComanda(comanda);
         comandaRepository.save(comanda);
     }
 
