@@ -23,19 +23,19 @@ public class ComandaController {
     }
 
     @PostMapping("/{id}/produtos")
-    public ResponseEntity<ComandaResponseDTO> adicionarProduto(@PathVariable Long id,@RequestBody ItemComandaDTO dto){
+    public ResponseEntity<ComandaResponseDTO> adicionarProduto(@PathVariable Long id,@RequestBody ItemComandaRequestDTO dto){
         return ResponseEntity.ok(comandaService.adicionarProduto(id , dto.getIdProduto(), dto.getQuantidade()));
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<ComandaFechadaResponseDTO> fecharComanda(@PathVariable Long id,@RequestBody StatusComandaRequestDTO dto){
+    public ResponseEntity<ComandaFechadaResponseDTO> ajustarStatusComanda(@PathVariable Long id,@RequestBody StatusComandaRequestDTO dto){
         return ResponseEntity.ok(comandaService.ajustarStatusComanda(id,dto.status()));
     }
 
 
 
     @PatchMapping("/{id}/itens")
-    public ResponseEntity<ComandaResponseDTO> editarProduto(@PathVariable Long id , @RequestBody ItemComandaDTO dto){
+    public ResponseEntity<ComandaResponseDTO> editarProduto(@PathVariable Long id , @RequestBody ItemComandaRequestDTO dto){
         return ResponseEntity.ok(comandaService.editarComanda(id,dto));
     }
 
