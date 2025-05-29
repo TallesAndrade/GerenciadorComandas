@@ -62,24 +62,22 @@ public class ComandaService {
         comanda.setValorTotal(valorTotal);
     }
 
-    public ComandaFechadaResponseDTO fecharComanda(Long idComanda){
+    private void fecharComanda(Long idComanda){
         Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         comanda.setStatusComanda(Status.FECHADA);
         comanda.setDataFechamento(LocalDateTime.now());
         comandaRepository.save(comanda);
-        return comandaMapper.toFechadaDTO(comanda);
     }
 
-    public ComandaFechadaResponseDTO cancelarComanda(Long idComanda){
+    private void cancelarComanda(Long idComanda){
         Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         comanda.setStatusComanda(Status.CANCELADA);
         comanda.setDataFechamento(LocalDateTime.now());
         produtoComandaService.voltarEstoque(comanda);
         comandaRepository.save(comanda);
-        return comandaMapper.toFechadaDTO(comanda);
     }
 
-    public ComandaResponseDTO editarComanda(Long idComanda,ItemComandaDTO itemComanda){
+    public ComandaResponseDTO editarComanda(Long idComanda,ItemComandaRequestDTO itemComanda){
         Comanda comanda = comandaRepository.findById(idComanda)
                 .orElseThrow(ComandaNotFoundException::new);
         List<ProdutoComanda> produtosComanda = comanda.getProdutosComanda();
