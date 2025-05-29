@@ -134,11 +134,10 @@ public class ComandaService {
     }
 
     public ComandaFechadaResponseDTO ajustarStatusComanda(Long idComanda,Status statusComanda){
-        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
+        comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
 
         if (statusComanda.equals(Status.FECHADA)){
             fecharComanda(idComanda);
-            comandaMapper.toFechadaDTO(comanda);
         }else if(statusComanda.equals(Status.CANCELADA)) {
             cancelarComanda(idComanda);
         }else {
