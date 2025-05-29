@@ -5,6 +5,7 @@ import com.talles.GerenciadorComandas.entity.Comanda;
 import com.talles.GerenciadorComandas.entity.ProdutoComanda;
 import com.talles.GerenciadorComandas.enums.Status;
 import com.talles.GerenciadorComandas.exceptions.ComandaNotFoundException;
+import com.talles.GerenciadorComandas.exceptions.StatusComandaInvalidoException;
 import com.talles.GerenciadorComandas.mapper.ComandaMapper;
 import com.talles.GerenciadorComandas.repository.ComandaRepository;
 import com.talles.GerenciadorComandas.repository.ProdutoComandaRepository;
@@ -69,12 +70,13 @@ public class ComandaService {
         return comandaMapper.toFechadaDTO(comanda);
     }
 
-    public void cancelarComanda(Long idComanda){
+    public ComandaFechadaResponseDTO cancelarComanda(Long idComanda){
         Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         comanda.setStatusComanda(Status.CANCELADA);
         comanda.setDataFechamento(LocalDateTime.now());
         produtoComandaService.voltarEstoque(comanda);
         comandaRepository.save(comanda);
+        return comandaMapper.toFechadaDTO(comanda);
     }
 
     public ComandaResponseDTO editarComanda(Long idComanda,ItemComandaDTO itemComanda){
@@ -128,5 +130,19 @@ public class ComandaService {
     public ComandaResponseDTO comandaPorID(Long idComanda){
         Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
         return comandaMapper.ToDto(comanda);
+    }
+
+    public ComandaFechadaResponseDTO ajustarStatusComanda(Long idComanda,Status statusComanda){
+        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
+
+        if (statusComanda.equals(Status.FECHADA)){
+            fecharComanda(idComanda);
+            comandaMapper.toFechadaDTO(comanda);
+        }else if(statusComanda.equals(Status.CANCELADA)) {
+            cancelarComanda(idComanda);
+        }else {
+            throw new StatusComandaInvalidoException();
+        }
+        return comandaMapper.toFechadaDTO(comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new));
     }
 }
