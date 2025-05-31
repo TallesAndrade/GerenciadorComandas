@@ -7,6 +7,7 @@ import com.talles.GerenciadorComandas.enums.Status;
 import com.talles.GerenciadorComandas.exceptions.ComandaNotFoundException;
 import com.talles.GerenciadorComandas.exceptions.StatusComandaInvalidoException;
 import com.talles.GerenciadorComandas.mapper.ComandaMapper;
+import com.talles.GerenciadorComandas.mapper.ComandaResponseMapper;
 import com.talles.GerenciadorComandas.repository.ComandaRepository;
 import com.talles.GerenciadorComandas.repository.ProdutoComandaRepository;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,15 @@ public class ComandaService {
     private final ComandaMapper comandaMapper;
     private final ProdutoComandaService produtoComandaService;
     private final ProdutoComandaRepository produtoComandaRepository;
+    private final ComandaResponseMapper comandaResponseMapper;
 
 
-    public ComandaService(ComandaRepository comandaRepository, ComandaMapper comandaMapper, ProdutoComandaService produtoComandaService, ProdutoComandaRepository produtoComandaRepository) {
+    public ComandaService(ComandaRepository comandaRepository, ComandaMapper comandaMapper, ProdutoComandaService produtoComandaService, ProdutoComandaRepository produtoComandaRepository,ComandaResponseMapper comandaResponseMapper) {
         this.comandaRepository = comandaRepository;
         this.comandaMapper = comandaMapper;
         this.produtoComandaService = produtoComandaService;
         this.produtoComandaRepository = produtoComandaRepository;
+        this.comandaResponseMapper = comandaResponseMapper;
     }
 
     public ComandaResponseDTO criarComanda(ComandaRequestDTO comandaDTO){
@@ -38,7 +41,7 @@ public class ComandaService {
         comanda.setDataAbertura(LocalDateTime.now());
         comanda.setStatusComanda(Status.ABERTA);
         comandaRepository.save(comanda);
-        return comandaMapper.ToDto(comanda);
+        return comandaResponseMapper.toComandaResponseDTO(comanda);
     }
     public ComandaResponseDTO adicionarProduto(Long idComanda, Long idProduto, int quantidade){
         Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
@@ -51,7 +54,7 @@ public class ComandaService {
         comanda.setProdutosComanda(produtosComanda);
         atualizarValorComanda(comanda);
         comandaRepository.save(comanda);
-        return comandaMapper.ToDto(comanda);
+        return comandaResponseMapper.toComandaResponseDTO(comanda);
     }
 
     private void atualizarValorComanda(Comanda comanda){
@@ -89,7 +92,7 @@ public class ComandaService {
         comanda.setProdutosComanda(produtosComanda);
         atualizarValorComanda(comanda);
         comandaRepository.save(comanda);
-        return comandaMapper.ToDto(comanda);
+        return comandaResponseMapper.toComandaResponseDTO(comanda);
     }
 
     private void ajustarQuantidade(ProdutoComanda produtoComanda, int quantidade) {
@@ -123,12 +126,12 @@ public class ComandaService {
     public List<ComandaResponseDTO> listarComandas(){
         List<Comanda> comandas = comandaRepository.findByStatusComanda(Status.ABERTA);
         return comandas.stream()
-                .map(comandaMapper::ToDto).toList();
+                .map(comandaResponseMapper::toComandaResponseDTO).toList();
     }
 
     public ComandaResponseDTO comandaPorID(Long idComanda){
         Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
-        return comandaMapper.ToDto(comanda);
+        return comandaResponseMapper.toComandaResponseDTO(comanda);
     }
 
     public ComandaFechadaResponseDTO ajustarStatusComanda(Long idComanda,Status statusComanda){
@@ -141,6 +144,6 @@ public class ComandaService {
         }else {
             throw new StatusComandaInvalidoException();
         }
-        return comandaMapper.toFechadaDTO(comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new));
+        return comandaResponseMapper.toComandaFechadaResponseDTO(comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new));
     }
 }
