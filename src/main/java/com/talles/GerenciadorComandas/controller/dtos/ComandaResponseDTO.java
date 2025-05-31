@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +17,6 @@ public class ComandaResponseDTO {
     private String nomeCliente;
     private List<ProdutoComandaResponseDTO> produtosComanda = new ArrayList<>();
     private BigDecimal valorTotal;
-    private LocalDateTime dataAbertura;
+    private String dataAbertura;
     private Status statusComanda;
 }
