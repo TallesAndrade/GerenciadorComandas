@@ -130,7 +130,7 @@ public class ComandaService {
     }
 
     public ComandaResponseDTO comandaPorID(Long idComanda){
-        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow();
+        Comanda comanda = comandaRepository.findById(idComanda).orElseThrow(ComandaNotFoundException::new);
         return comandaResponseMapper.toComandaResponseDTO(comanda);
     }
 
