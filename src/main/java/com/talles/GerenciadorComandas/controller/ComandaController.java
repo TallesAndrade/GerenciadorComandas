@@ -1,6 +1,7 @@
 package com.talles.GerenciadorComandas.controller;
 
 import com.talles.GerenciadorComandas.controller.dtos.*;
+import com.talles.GerenciadorComandas.docs.ComandaApiDocs;
 import com.talles.GerenciadorComandas.service.ComandaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comandas")
-public class ComandaController {
+public class ComandaController{
     private final ComandaService comandaService;
 
     public ComandaController(ComandaService comandaService) {
@@ -25,19 +26,19 @@ public class ComandaController {
     }
 
     @PostMapping("/{id}/produtos")
-    public ResponseEntity<ComandaResponseDTO> adicionarProduto(@PathVariable Long id, @RequestBody ItemComandaRequestDTO dto) {
+    public ResponseEntity<ComandaResponseDTO> adicionarProduto(@PathVariable Long id, @Valid@RequestBody ItemComandaRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(comandaService.adicionarProduto(id, dto.getIdProduto(), dto.getQuantidade()));
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<ComandaFechadaResponseDTO> ajustarStatusComanda(@PathVariable Long id, @RequestBody StatusComandaRequestDTO dto) {
+    public ResponseEntity<ComandaFechadaResponseDTO> ajustarStatusComanda(@PathVariable Long id,@Valid @RequestBody StatusComandaRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(comandaService.ajustarStatusComanda(id, dto.status()));
     }
 
     @PatchMapping("/{id}/itens")
-    public ResponseEntity<ComandaResponseDTO> editarProduto(@PathVariable Long id, @RequestBody ItemComandaRequestDTO dto) {
+    public ResponseEntity<ComandaResponseDTO> editarProduto(@PathVariable Long id,@Valid @RequestBody ItemComandaRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(comandaService.editarComanda(id, dto));
     }
