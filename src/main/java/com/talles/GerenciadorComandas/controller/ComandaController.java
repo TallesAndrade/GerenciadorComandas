@@ -2,6 +2,7 @@ package com.talles.GerenciadorComandas.controller;
 
 import com.talles.GerenciadorComandas.controller.dtos.*;
 import com.talles.GerenciadorComandas.service.ComandaService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ComandaController {
     }
 
     @PostMapping
-    public ResponseEntity<ComandaResponseDTO> criarComanda(@RequestBody ComandaRequestDTO comandaDTO) {
+    public ResponseEntity<ComandaResponseDTO> criarComanda(@Valid @RequestBody ComandaRequestDTO comandaDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(comandaService.criarComanda(comandaDTO));
     }
