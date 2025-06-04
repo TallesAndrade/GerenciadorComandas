@@ -8,7 +8,8 @@ public record StatusComandaRequestDTO(
 
         @Schema(
                 description = "Novo status da comanda (FECHADA ou CANCELADA)",
-                example = "FECHADA"
+                example = "FECHADA",
+                requiredMode = Schema.RequiredMode.REQUIRED
         )
         @NotNull
         Status status

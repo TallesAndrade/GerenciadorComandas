@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ComandaRequestDTO {
-    @Schema(description = "Nome do cliente",example = "Carlo Ancelotti")
+    @Schema(description = "Nome do cliente",example = "Carlo Ancelotti", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank
     private String nomeCliente;
 
