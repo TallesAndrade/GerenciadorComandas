@@ -3,12 +3,14 @@ package com.talles.GerenciadorComandas.service;
 import com.talles.GerenciadorComandas.controller.dtos.ProdutoRequestDTO;
 import com.talles.GerenciadorComandas.controller.dtos.ProdutoResponseDTO;
 import com.talles.GerenciadorComandas.entity.Produto;
+import com.talles.GerenciadorComandas.exceptions.EstoqueAindaDisponivelException;
 import com.talles.GerenciadorComandas.exceptions.ProdutoNotFoundException;
 import com.talles.GerenciadorComandas.mapper.ProdutoMapper;
 import com.talles.GerenciadorComandas.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProdutoService {
@@ -32,28 +34,40 @@ public class ProdutoService {
     }
 
     public List<ProdutoResponseDTO> listarProdutos() {
-        List<Produto> produtosList = produtoRepository.findAll();
+        List<Produto> produtosList = produtoRepository.findByAtivoTrue();
 
         return produtosList.stream()
                 .map(produtoMapper::toDTO).toList();
-
     }
     public ProdutoResponseDTO produtoById(Long id){
-        Produto produto = produtoRepository.findById(id)
-                .orElseThrow(ProdutoNotFoundException::new);
-        return produtoMapper.toDTO(produto);
-    }
-    public void deletarProdutoById(Long id){
-        if (!produtoRepository.existsById(id)) {
+        Optional<Produto> produto = produtoRepository.findByIdAndAtivoTrue(id);
+        if(produto.isEmpty()) {
             throw new ProdutoNotFoundException();
         }
-        produtoRepository.deleteById(id);
-
+        return produtoMapper.toDTO(produto.get());
+    }
+    public void deletarProdutoById(Long id){
+        Optional<Produto> produtoOptional = produtoRepository.findByIdAndAtivoTrue(id);
+        if (produtoOptional.isEmpty()) {
+            throw new ProdutoNotFoundException();
+        }
+        Produto produto = produtoOptional.get();
+        if (estoqueService.buscarEstoquePorProdutoId(produto.getId()).getQuantidade() != 0) {
+            throw new EstoqueAindaDisponivelException();
+        }
+        if (!produto.isAtivo()){
+            throw new IllegalArgumentException("Produto já está inativo");
+        }
+        produto.setAtivo(false);
+        produtoRepository.save(produto);
     }
 
     public ProdutoResponseDTO atualizarProduto(Long id, ProdutoRequestDTO produtoAtualizado){
-       Produto produto = produtoRepository.findById(id)
-               .orElseThrow(ProdutoNotFoundException::new);
+       Optional<Produto> produtoOptional = produtoRepository.findByIdAndAtivoTrue(id);
+       if (produtoOptional.isEmpty()) {
+           throw new ProdutoNotFoundException();
+       }
+       Produto produto = produtoOptional.get();
 
 
         if (produtoAtualizado.getNome() != null) {

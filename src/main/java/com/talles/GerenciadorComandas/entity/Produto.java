@@ -33,5 +33,6 @@ public class Produto {
     @JsonIgnore
     private List<ProdutoComanda> produtoComandas = new ArrayList<>();
 
+    private boolean ativo = true;
 
 }
