@@ -40,4 +40,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> statusComandaInvalidoHandler(StatusComandaInvalidoException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler(ProdutoInativoExcepiton.class)
+    public ResponseEntity<String> produtoInativoHandler(ProdutoInativoExcepiton ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

@@ -3,6 +3,7 @@ package com.talles.GerenciadorComandas.service;
 import com.talles.GerenciadorComandas.entity.Comanda;
 import com.talles.GerenciadorComandas.entity.Produto;
 import com.talles.GerenciadorComandas.entity.ProdutoComanda;
+import com.talles.GerenciadorComandas.exceptions.ProdutoInativoExcepiton;
 import com.talles.GerenciadorComandas.exceptions.ProdutoNotFoundException;
 import com.talles.GerenciadorComandas.repository.ProdutoComandaRepository;
 import com.talles.GerenciadorComandas.repository.ProdutoRepository;
@@ -28,6 +29,9 @@ public class ProdutoComandaService {
     public ProdutoComanda adicionarProdutoComanda(Comanda comanda,Long idProduto, int quantidade){
         Produto produto = produtoRepository.findById(idProduto)
                 .orElseThrow(ProdutoNotFoundException::new);
+        if (!produto.isAtivo()){
+            throw new ProdutoInativoExcepiton();
+        }
         estoqueService.subtrairSaldo(idProduto, quantidade);
         return produtoComandaRepository.save(new ProdutoComanda(comanda,produto,quantidade));
 
@@ -48,6 +52,9 @@ public class ProdutoComandaService {
     }
 
     public void subtrairSaldo(ProdutoComanda produtoComanda, int quantidade) {
+        if (!produtoComanda.getProduto().isAtivo()){
+            throw new ProdutoInativoExcepiton();
+        }
         estoqueService.subtrairSaldo(produtoComanda.getProduto().getId(), quantidade);
     }
 }
