@@ -55,9 +55,7 @@ public class ProdutoService {
         if (estoqueService.buscarEstoquePorProdutoId(produto.getId()).getQuantidade() != 0) {
             throw new EstoqueAindaDisponivelException();
         }
-        if (!produto.isAtivo()){
-            throw new IllegalArgumentException("Produto já está inativo");
-        }
+
         produto.setAtivo(false);
         produtoRepository.save(produto);
     }
