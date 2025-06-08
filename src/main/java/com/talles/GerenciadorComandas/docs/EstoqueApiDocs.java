@@ -23,7 +23,8 @@ public interface EstoqueApiDocs {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Saldo adicionado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Estoque do produto não encontrado")
+            @ApiResponse(responseCode = "404", description = "Estoque do produto não encontrado"),
+            @ApiResponse(responseCode = "422", description = "Produto está inativo no sistema")
     })
     ResponseEntity<EstoqueResponseDTO> adicionarSaldoEstoque(
             @Parameter(description = "ID do estoque (geralmente igual ao ID do produto)", example = "1")

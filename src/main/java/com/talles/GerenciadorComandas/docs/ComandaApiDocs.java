@@ -40,7 +40,7 @@ public interface ComandaApiDocs {
             @ApiResponse(responseCode = "200", description = "Produto adicionado com sucesso à comanda"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos enviados na requisição"),
             @ApiResponse(responseCode = "404", description = "Comanda, Produto ou Estoque não encontrados"),
-            @ApiResponse(responseCode = "422", description = "Quantidade solicitada excede o disponível em estoque")
+            @ApiResponse(responseCode = "422", description = "Não foi possível processar a instrução devido a uma regra de negócio (ex: Estoque insuficiente ou Produto inativo)"),
     })
     ResponseEntity<ComandaResponseDTO> adicionarProduto(
             @Parameter(description = "ID da comanda que receberá o produto", example = "1")
@@ -80,7 +80,7 @@ public interface ComandaApiDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso na comanda"),
             @ApiResponse(responseCode = "404", description = "Comanda ou Estoque não encontrados"),
-            @ApiResponse(responseCode = "422", description = "Quantidade solicitada excede o disponível em estoque")
+            @ApiResponse(responseCode = "422", description = "Não foi possível processar a instrução devido a uma regra de negócio (ex: Estoque insuficiente ou Produto inativo)"),
     })
     ResponseEntity<ComandaResponseDTO> editarProduto(
             @Parameter(description = "ID da comanda que terá o produto editado", example = "1")
