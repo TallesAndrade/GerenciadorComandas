@@ -4,11 +4,10 @@ import com.talles.GerenciadorComandas.controller.dtos.EstoqueRequestDTO;
 import com.talles.GerenciadorComandas.controller.dtos.EstoqueResponseDTO;
 import com.talles.GerenciadorComandas.entity.Estoque;
 import com.talles.GerenciadorComandas.entity.Produto;
-import com.talles.GerenciadorComandas.exceptions.EstoqueAindaDisponivelException;
-import com.talles.GerenciadorComandas.exceptions.EstoqueProdutoNotFoundException;
-import com.talles.GerenciadorComandas.exceptions.QuantidadeInsuficienteException;
+import com.talles.GerenciadorComandas.exceptions.*;
 import com.talles.GerenciadorComandas.mapper.EstoqueMapper;
 import com.talles.GerenciadorComandas.repository.EstoqueRepository;
+import com.talles.GerenciadorComandas.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +16,12 @@ import java.util.List;
 public class EstoqueService {
     private final EstoqueRepository estoqueRepository;
     private final EstoqueMapper estoqueMapper;
+    private final ProdutoRepository produtoRepository;
 
-    public EstoqueService(EstoqueRepository estoqueRepository, EstoqueMapper estoqueMapper) {
+    public EstoqueService(EstoqueRepository estoqueRepository, EstoqueMapper estoqueMapper, ProdutoRepository produtoRepository) {
         this.estoqueRepository = estoqueRepository;
         this.estoqueMapper = estoqueMapper;
+        this.produtoRepository = produtoRepository;
     }
 
     public void criarEstoque(Produto produto){
@@ -30,6 +31,11 @@ public class EstoqueService {
 
 
     public EstoqueResponseDTO adicionarQuantidadeEstoque(Long id, EstoqueRequestDTO estoqueDTO){
+        Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(ProdutoNotFoundException::new);
+        if (!produto.isAtivo()){
+            throw new ProdutoInativoExcepiton();
+        }
         adicionarSaldo(id, estoqueDTO.getQuantidade());
         return estoqueMapper.toDTO(estoqueRepository.findById(id)
                 .orElseThrow(EstoqueProdutoNotFoundException::new));
