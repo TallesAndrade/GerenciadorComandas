@@ -31,7 +31,7 @@ public class EstoqueService {
 
 
     public EstoqueResponseDTO adicionarQuantidadeEstoque(Long id, EstoqueRequestDTO estoqueDTO){
-        Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
+        Produto produto = produtoRepository.findById(id)
                 .orElseThrow(ProdutoNotFoundException::new);
         if (!produto.isAtivo()){
             throw new ProdutoInativoExcepiton();
@@ -62,7 +62,7 @@ public class EstoqueService {
         Estoque estoque = estoqueRepository.findById(idProduto)
                 .orElseThrow(EstoqueProdutoNotFoundException::new);
         if (estoque.getQuantidade() < quantidade) {
-            throw new QuantidadeInsuficienteException();
+            throw new QuantidadeInsuficienteException("Quantidade a ser removida é maior que o saldo disponivel");
         }
         estoque.setQuantidade(estoque.getQuantidade() - quantidade);
         estoqueRepository.save(estoque);

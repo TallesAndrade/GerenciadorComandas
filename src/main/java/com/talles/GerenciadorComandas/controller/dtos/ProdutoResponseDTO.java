@@ -15,4 +15,5 @@ public class ProdutoResponseDTO {
     private String nome;
     private BigDecimal preco;
     private String codigoDeBarras;
+    private boolean ativo;
 }
