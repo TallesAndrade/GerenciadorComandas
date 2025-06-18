@@ -28,9 +28,9 @@ public class ProdutoService {
 
     public ProdutoResponseDTO cadastrarProduto(ProdutoRequestDTO produtoDTO){
         Produto produto = produtoMapper.toEntity(produtoDTO);
-        produtoRepository.save(produto);
-        estoqueService.criarEstoque(produto);
-        return produtoMapper.toDTO(produto);
+        Produto produtoSalvo = produtoRepository.save(produto);
+        estoqueService.criarEstoque(produtoSalvo);
+        return produtoMapper.toDTO(produtoSalvo);
     }
 
     public List<ProdutoResponseDTO> listarProdutos() {
@@ -42,7 +42,7 @@ public class ProdutoService {
     public ProdutoResponseDTO produtoById(Long id){
         Optional<Produto> produto = produtoRepository.findByIdAndAtivoTrue(id);
         if(produto.isEmpty()) {
-            throw new ProdutoNotFoundException();
+            throw new  ProdutoNotFoundException();
         }
         return produtoMapper.toDTO(produto.get());
     }
